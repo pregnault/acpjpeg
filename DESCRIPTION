@@ -1,0 +1,13 @@
+Package: acpjpeg
+Type: Package
+Title: PCA on RGB channels of a JPEG file
+Version: 0.0.1
+Date: 2015-10-13
+Author: Philippe Regnault [aut, cre]
+Maintainer: Philippe Regnault <philippe.regnault@univ-reims.fr>
+Description: JPEG images are converted into a n*3 matrix, where n stands for the number of pixels in the image and
+    the columns are the Red, Green and Blue (RGB) channels of the pixels. Then, a PCA is performed.
+    Outputs are two JPEG images obtained by projecting the original one to the (two) principal component(s).
+License: GPL (>= 2)
+Imports: Rcpp (>= 0.12.1), jpeg (>= 0.1-8), FactoMineR (>= 1.31.3), foreach (>= 1.4.2)
+LinkingTo: Rcpp
