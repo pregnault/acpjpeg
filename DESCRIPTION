@@ -11,3 +11,4 @@ Description: JPEG images are converted into a n*3 matrix, where n stands for the
 License: GPL (>= 2)
 Imports: Rcpp (>= 0.12.1), jpeg (>= 0.1-8), FactoMineR (>= 1.31.3), foreach (>= 1.4.2)
 LinkingTo: Rcpp
+RoxygenNote: 7.1.2

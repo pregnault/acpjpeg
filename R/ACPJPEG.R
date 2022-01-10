@@ -105,11 +105,11 @@ pcajpeg <- function(file = NULL){
   R <- as.numeric(img[,,1])
   G <- as.numeric(img[,,2])
   B <- as.numeric(img[,,3])
-  ## Representation de l'image sous forme d'une matrice à n*m lignes et 3 colonnes
+  ## Representation de l'image sous forme d'une matrice avec n*m lignes et 3 colonnes
   imgAsMat <- cbind(R, G, B)
-  ##Calcul de la moyenne et de l'écart-type de chaque canal
+  ##Calcul de la moyenne et de l'ecart-type de chaque canal
 #   t <- proc.time()
-  MS <- CalcMS1(imgAsMat)
+  MS <- CalcMS2(imgAsMat)
 #   print(proc.time()-t)
   ## Decommenter le prochain bloc d'instructions pour une optimisation du calcul de la moyenne et de l'ecart-type
 #   L <- list(R,G,B)
@@ -119,27 +119,31 @@ pcajpeg <- function(file = NULL){
   print(MS)
   M <- MS[,1]
   S <- MS[,2]
-  ## Réalisation de l'ACP
+  ## Realisation de l'ACP
   pca.img <- PCA(imgAsMat)
-  # Décommenter la ligne suivante pour executer l'ACP sans représentation graphique
+  # pca.img2 <- PCA(scale(imgAsMat), scale.unit = TRUE, graph=FALSE)
+  # Decommenter la ligne suivante pour executer l'ACP sans representation graphique
 #   pca.img <- PCA(imgAsMat, graph=FALSE)
-  Pass <- eigen(cor(imgAsMat))$vectors # Facteurs principaux
-  ## Reconstitution de l'image à partir de la premiere composante
-  tmp <- cbind(pca.img$ind$coord[,1], rep(0,n*m), rep(0, n*m))
+  # Pass <- eigen(cor(imgAsMat))$vectors # Facteurs principaux
+  Pass <- pca.img$var$coord
+  Comp <- pca.img$ind$coord
+  Comp <- scale(Comp)
+  ## Reconstitution de l'image a partir de la premiere composante
+  tmp <- cbind(Comp[,1], rep(0,n*m), rep(0, n*m))
   tmp <- tmp%*%t(Pass)
   tmp <- tmp*matrix(S, n*m, 3, byrow=TRUE) + matrix(M, n*m, 3, byrow=TRUE)
   img1 <- array(tmp, dim=d)
-  ## Enregistrement de l'image dans le répertoire de travail
+  ## Enregistrement de l'image dans le repertoire de travail
   writeJPEG(img1, target='img1.jpeg', quality=1)
-  #### Reconstitution de l'image à partir des deux premieres composantes ####
-  tmp <- cbind(pca.img$ind$coord[,1:2], rep(0,n*m))
+  #### Reconstitution de l'image a partir des deux premieres composantes ####
+  tmp <- cbind(Comp[,1:2], rep(0,n*m))
   tmp <- tmp%*%t(Pass)
   tmp <- tmp*matrix(S, n*m, 3, byrow=TRUE) + matrix(M, n*m, 3, byrow=TRUE)
   img2 <- array(tmp, dim=d)
   writeJPEG(img2, target='img2.jpeg', quality=1)
-  #### Reconstitution de l'image à partir des trois composantes ####
+  #### Reconstitution de l'image a partir des trois composantes ####
   tmp <- pca.img$ind$coord
-  tmp <- tmp%*%t(Pass)
+  tmp <- scale(tmp)%*%t(Pass)
   tmp <- tmp*matrix(S, n*m, 3, byrow=TRUE) + matrix(M, n*m, 3, byrow=TRUE)
   img3 <- array(tmp, dim=d)
   writeJPEG(img3, target='img3.jpeg', quality=1)
